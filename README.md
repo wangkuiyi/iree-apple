@@ -12,7 +12,9 @@ Git-clone this repo and the [IREE repo](https://github.com/openxla/iree/). Make 
 └── iree
 ```
 
-Run `~/work/iree-for-apple-platforms/build.sh` to build the IREE runtime into `~/iree-for-apple-platforms/build/iree.xcframework`.  It also builds the IREE compiler into `~/iree-for-apple-platforms/build/compiler/`.
+Run `~/work/iree-for-apple-platforms/build.sh` to build 
+1. the IREE runtime into `~/iree-for-apple-platforms/build/runtime/iree.xcframework`, and 
+1. the IREE compiler and debugging tools into `~/iree-for-apple-platforms/build/compiler/install/bin/`.
 
 Run `build.sh -f` to force rebuild the IREE runtime XCFramework.
 

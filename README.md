@@ -2,6 +2,18 @@
 
 This project builds the IREE compiler into a command-line tool for macOS and the IREE runtime into an XCFramework that can be dragged and dropped into Xcode projects. The XCFramework enables the development of apps for Apple devices and computers that do deep learning inference and training.
 
+## Prerequisite
+
+1. Mac
+1. Xcode
+   1. Python3 and pip3
+   1. clang
+1. [Homebrew](https://brew.sh/)
+1. CMake and Ninja
+   ```bash
+   brew install cmake ninja
+   ```
+
 ## Usage
 
 Git-clone this repo and the [IREE repo](https://github.com/openxla/iree/). Make sure that they are in the same directory.  For example:

@@ -70,5 +70,5 @@ This step uses the CMakeLists.txt file in this project.  It includes the followi
 
 1. The IREE runtime is built by `build.sh` into a `libiree.a` library for each OS-CPU combo.
 1. For all CPU architectures of an OS, `build.sh` combines the `libiree.a` files into a single FAT `libiree.a` file.
-1. For each OS, `build.sh` puts the IREE runtime header files and this FAT `libiree.a` into a [framework](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPFrameworks/Concepts/WhatAreFrameworks.html), which is a bundle, or a directory structure, on the filesystem.
-1. For all frameworks for all of the above operating systems, `build.sh` combines the framework bundles into an XCFramework (https://developer.apple.com/documentation/xcode/creating-a-multi-platform-binary-framework-bundle).
+1. For each OS, `build.sh` puts the IREE runtime header files and this FAT `libiree.a` into a [framework bundle](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPFrameworks/Concepts/WhatAreFrameworks.html), which is a bundle, or a directory structure, on the filesystem.
+1. For all frameworks for all of the above operating systems, `build.sh` combines the framework bundles into an XCFramework bundle.

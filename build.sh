@@ -198,7 +198,7 @@ function build_iree_runtime_for_device() {
 	      $sans \
 	      "$metal" \
 	      -GNinja \
-              -DCMAKE_SYSTEM_NAME=iOS \
+              -DCMAKE_SYSTEM_NAME=$sysname \
               -DCMAKE_OSX_SYSROOT="$(xcodebuild -version -sdk $sdk Path)" \
               -DCMAKE_OSX_ARCHITECTURES="$arch" \
               -DCMAKE_SYSTEM_PROCESSOR="$sysarch" \
@@ -258,7 +258,7 @@ function build_iree_runtime_for_macos() {
     fi
 }
 
-function build_fat_static_library() {
+function merge_fat_static_library() {
     src_label=$2
     dst_label=$1
 
@@ -295,14 +295,6 @@ build_iree_runtime_for_device ios-sim arm64
 build_iree_runtime_for_device ios-sim x86_64
 build_iree_runtime_for_device ios-dev arm64
 build_iree_runtime_for_device ios-dev arm64e
-build_iree_runtime_for_device tv-sim arm64
-build_iree_runtime_for_device tv-sim x86_64
-build_iree_runtime_for_device tv-dev arm64
-build_iree_runtime_for_device tv-dev arm64e
-build_iree_runtime_for_device watch-sim arm64
-build_iree_runtime_for_device watch-sim x86_64
-build_iree_runtime_for_device watch-dev arm64
-build_iree_runtime_for_device watch-dev arm64e
 build_iree_runtime_for_macos x86_64
 build_iree_runtime_for_macos arm64
 
@@ -310,10 +302,6 @@ build_iree_runtime_for_macos arm64
 merge_fat_static_library ios-sim-arm64 ios-sim-x86_64
 merge_fat_static_library ios-dev-arm64 ios-dev-arm64e
 merge_fat_static_library macos-arm64 macos-x86_64
-merge_fat_static_library tv-sim-arm64 tv-sim-x86_64
-merge_fat_static_library tv-dev-arm64 tv-dev-arm64e
-merge_fat_static_library watch-sim-arm64 watch-sim-x86_64
-merge_fat_static_library watch-dev-arm64 watch-dev-arm64e
 
 # Step 3. Merge the above frameworks into an XCFramework
 echo "┌------------------------------------------------------------------------------┐"
@@ -326,12 +314,8 @@ rm -rf "$IREE_BUILD_RUNTIME_XCFRAMEWORK"
 # for macOS/iOS.  But LTO should be enabled for smaller binary size
 # and better runtime performance.
 xcodebuild -create-xcframework \
-    -framework "$BUILD_DIR"/macos-arm64/lib/iree.framework \
-    -framework "$BUILD_DIR"/ios-sim-arm64/lib/iree.framework \
-    -framework "$BUILD_DIR"/ios-dev-arm64/lib/iree.framework \
-    -framework "$BUILD_DIR"/tv-sim-arm64/lib/iree.framework \
-    -framework "$BUILD_DIR"/tv-dev-arm64/lib/iree.framework \
-    -framework "$BUILD_DIR"/watch-sim-arm64/lib/iree.framework \
-    -framework "$BUILD_DIR"/watch-dev-arm64/lib/iree.framework \
+    -framework "$IREE_BUILD_RUNTIME_DIR"/macos-arm64/lib/iree.framework \
+    -framework "$IREE_BUILD_RUNTIME_DIR"/ios-sim-arm64/lib/iree.framework \
+    -framework "$IREE_BUILD_RUNTIME_DIR"/ios-dev-arm64/lib/iree.framework \
     -output "$IREE_BUILD_RUNTIME_XCFRAMEWORK"
 tree -L 1 -d /Users/y/w/iree-ios/build/runtime/iree.xcframework

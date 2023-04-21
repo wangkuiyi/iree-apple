@@ -40,9 +40,8 @@ Run `build.sh -m` to enable the Metal GPU support.
 Apple devices run various operating systems, and each kind of device may have more than one CPU architecture.  The built `iree.xcframework` supports the following platforms:
 
 1. macOS - x86_64 and arm64
-1. iOS   - arm64 and arm64e
-1. tvOS  - arm64
-1. watchOS - arm64
+1. iOS - arm64 and arm64e
+1. iOS Simulator - x86_64 and arm64
 
 ## What Does This Project Do
 

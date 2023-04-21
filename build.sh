@@ -70,9 +70,9 @@ function build_iree_for_host() {
               -DPython3_EXECUTABLE="$(which python3)" \
               -DIREE_BUILD_TRACY=OFF \
               -DCMAKE_INSTALL_PREFIX="$IREE_BUILD_COMPILER_INSTALL_DIR" \
-	      >>"$IREE_BUILD_COMPILER_DIR"/build.log 2>&1
+	      > "$IREE_BUILD_COMPILER_DIR"/build.log 2>&1
         cmake --build "$IREE_BUILD_COMPILER_DIR" --target install \
-              >>"$IREE_BUILD_COMPILER_DIR"/build.log 2>&1
+              >> "$IREE_BUILD_COMPILER_DIR"/build.log 2>&1
     fi
 }
 
@@ -144,12 +144,16 @@ function merge_static_libraries() {
     )
 }
 
-function build_iree_runtime_for_ios() {
+function build_iree_runtime_for_device() {
     case $1 in
-    sim) sdk=iphonesimulator ;;
-    dev) sdk=iphoneos ;;
+    ios-sim) sysname=iOS; sdk=iphonesimulator ;;
+    ios-dev) sysname=iOS; sdk=iphoneos ;;
+    tv-sim) sysname=tvOS; sdk=appletvsimulator ;;
+    tv-dev) sysname=tvOS; sdk=appletvos ;;
+    watch-sim) sysname=watchOS; sdk=watchsimulator ;;
+    watch-dev) sysname=watchOS; sdk=watchos ;;
     *)
-        echo "Unknown target $1 when calling build_iree_runtime_for_ios"
+        echo "Error: Unknown target $1"
         exit 5
         ;;
     esac
@@ -163,7 +167,12 @@ function build_iree_runtime_for_ios() {
     fi
 
     arch=$2
-    label=ios-$1-"$arch"
+    sysarch=$arch
+    if [[ "$sysarch" == "arm64e" ]]; then
+	sysarch=arm64 # pytorch/cpuinfo does not recognize CMAKE_SYSTEM_PROCESSOR=arm64e
+    fi
+
+    label=$1-"$arch"
     build_dir="$IREE_BUILD_RUNTIME_DIR"/"$label"
 
     test_file="$build_dir"/lib/iree.framework/iree
@@ -189,10 +198,10 @@ function build_iree_runtime_for_ios() {
 	      $sans \
 	      "$metal" \
 	      -GNinja \
-              -DCMAKE_SYSTEM_NAME=iOS \
+              -DCMAKE_SYSTEM_NAME=$sysname \
               -DCMAKE_OSX_SYSROOT="$(xcodebuild -version -sdk $sdk Path)" \
               -DCMAKE_OSX_ARCHITECTURES="$arch" \
-              -DCMAKE_SYSTEM_PROCESSOR="$arch" \
+              -DCMAKE_SYSTEM_PROCESSOR="$sysarch" \
               -DCMAKE_OSX_DEPLOYMENT_TARGET=16.0 \
               -DCMAKE_IOS_INSTALL_COMBINED=YES \
               -DIREE_HOST_BIN_DIR="$IREE_BUILD_COMPILER_INSTALL_DIR"/bin \
@@ -206,6 +215,10 @@ function build_iree_runtime_for_ios() {
 
 function build_iree_runtime_for_macos() {
     arch=$1
+    sysarch=$arch
+    if [[ "$sysarch" == "arm64e" ]]; then
+	sysarch=arm64 # pytorch/cpuinfo does not recognize CMAKE_SYSTEM_PROCESSOR=arm64e
+    fi
     label=macos-"$arch"
     build_dir="$IREE_BUILD_RUNTIME_DIR"/"$label"
 
@@ -236,14 +249,16 @@ function build_iree_runtime_for_macos() {
 	    $sans \
 	    "$metal" \
             -GNinja \
-            -DCMAKE_OSX_ARCHITECTURES="$arch" >"$build_dir"/build.log 2>&1
-        cmake --build "$build_dir" >"$build_dir"/build.log 2>&1
+            -DCMAKE_OSX_ARCHITECTURES="$arch" \
+	    -DCMAKE_SYSTEM_PROCESSOR="$sysarch" \
+	    > "$build_dir"/build.log 2>&1
+        cmake --build "$build_dir" >> "$build_dir"/build.log 2>&1
 
         merge_static_libraries "$label"
     fi
 }
 
-function build_fat_static_library() {
+function merge_fat_static_library() {
     src_label=$2
     dst_label=$1
 
@@ -262,6 +277,8 @@ function build_fat_static_library() {
     fi
 }
 
+
+
 # Step 0. Build IREE compiler, runtime, and Python bindings for the host (macOS).
 build_iree_for_host
 
@@ -274,17 +291,17 @@ build_iree_for_host
 # build_iree_runtime_for_ios dev x86_64
 #
 # This step also merge dependent static libraries into the target library.
-build_iree_runtime_for_ios sim arm64
-build_iree_runtime_for_ios sim x86_64
-build_iree_runtime_for_ios dev arm64
+build_iree_runtime_for_device ios-sim arm64
+build_iree_runtime_for_device ios-sim x86_64
+build_iree_runtime_for_device ios-dev arm64
+build_iree_runtime_for_device ios-dev arm64e
 build_iree_runtime_for_macos x86_64
 build_iree_runtime_for_macos arm64
 
 # Step 2. Merge the frameworks of the same OS platform
-#  ios-simulator-arm64+x86_64
-#  macos-arm64+x86_64
-build_fat_static_library ios-sim-arm64 ios-sim-x86_64
-build_fat_static_library macos-arm64 macos-x86_64
+merge_fat_static_library ios-sim-arm64 ios-sim-x86_64
+merge_fat_static_library ios-dev-arm64 ios-dev-arm64e
+merge_fat_static_library macos-arm64 macos-x86_64
 
 # Step 3. Merge the above frameworks into an XCFramework
 echo "┌------------------------------------------------------------------------------┐"

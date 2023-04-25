@@ -43,6 +43,7 @@ Run `build.sh -m` to enable the Metal GPU support. As of Apr 20, 2023, the Metal
 ## Steps-by-step Guide
 
 Clone this project.
+
 ```bash
 mkdir ~/work/
 cd ~/work
@@ -50,12 +51,14 @@ git clone <URL to this project>
 ```
 
 Clone IREE.
+
 ```bash
 cd ~/work
 git clone --recursive https://github.com/openxla/iree
 ```
 
 If you want Metal GPU support, you will need to clone https://github.com/antiagainst/ and use the branch `apple-metal-hal`.
+
 ```bash
 cd ~/work/iree
 git remote add lei https://github.com/antiagainst/iree
@@ -65,28 +68,30 @@ git submodule update
 ```
 
 Build IREE compiler, runtime, and Python binding for macOS, and IREE runtime into an XCFramework.
+
 ```bash
 cd ~/work/iree-for-apple-platform
 ./build.sh
 ```
 
 Run the following commands to
+
 1. Set `DYLD_LIBRARY_PATH` environment variable to expose the dynamic library of IREE compiler.
 1. Set `PATH` environment variable and run `iree-compile`.
 1. Set `PYTHONPATH` environment variable to expose Python packages `iree.compiler` and `iree.runtime`.
+
 ```bash
 source ./install.sh
-export DYLD_LIBRARY_PATH
-export PATH
-export PYTHONPATH
 ```
 
 Then, you should be able to run the IREE compiler from the command-line.
+
 ```bash
 iree-compile -h
 ```
 
 and you should be able to import `iree.compiler` and `iree.runtime` in Python.
+
 ```bash
 python3 -c 'import iree.compiler; import iree.runtime'
 ```

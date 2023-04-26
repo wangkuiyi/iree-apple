@@ -6,11 +6,11 @@ In the repo [`iree-org/iree-jax`](https://github.com/iree-org/iree-jax/tree/main
 
 Following steps in [`README.md`](/README.md) to build the IREE compiler and runtime for macOS, and the runtime as an XCFramework for macOS and iOS.
 
-\*\*\[04/26/2023\] Please be aware that we will need to build this [feature branch](https://github.com/antiagainst/iree/tree/metal-hal-pr) before it lands to the main branch.
+**\[04/26/2023\]** Please be aware that we will need to build this [feature branch](https://github.com/antiagainst/iree/tree/metal-hal-pr) before it lands to the main branch.
 
 ### Fetch the Source Code
 
-Suppose that we have git-cloned IREE to `~/work/iree`.
+If you have git-cloned IREE to `~/work/iree`, run the following commands to switch over to the above feature branch.
 
 ```bash
 cd ~/work/iree
@@ -18,6 +18,13 @@ git remote add lei https://github.com/antiagainst/iree
 git fetch lei
 git checkout metal-hal-pr
 git submodule update
+```
+
+Or, you can clone the above feature branch.
+
+```bash
+cd ~/work
+git clone https://github.com/antiagainst/iree -b metal-hal-pr
 ```
 
 ### Build IREE from Source Code

@@ -61,7 +61,7 @@ function build_iree_for_host() {
 	      -DCMAKE_CXX_COMPILER_RANLIB=/usr/bin/ranlib \
 	      -DCMAKE_AR=/usr/bin/ar \
 	      "$dbg" \
-	      $sans \
+	      "$sans" \
 	      "$metal" \
               -GNinja \
               -DIREE_BUILD_TESTS=OFF \
@@ -159,7 +159,7 @@ function build_iree_runtime_for_device() {
     esac
 
     if [[ "$sans" != "" ]]; then	# Users chose to enable TSAN
-	if [[ "sdk" == "iphonesimulator" ]]; then
+	if [[ "$sdk" == "iphonesimulator" ]]; then
 	    sans="$sans -DCMAKE_EXE_LINKER_FLAGS=-fsanitize=thread"
 	else
 	    sans="" 		# devices do not support TSAN
@@ -195,7 +195,7 @@ function build_iree_runtime_for_device() {
 	      -DCMAKE_CXX_COMPILER_RANLIB=/usr/bin/ranlib \
 	      -DCMAKE_AR=/usr/bin/ar \
 	      "$dbg" \
-	      $sans \
+	      "$sans" \
 	      "$metal" \
 	      -GNinja \
               -DCMAKE_SYSTEM_NAME=$sysname \
@@ -246,7 +246,7 @@ function build_iree_runtime_for_macos() {
 	    -DCMAKE_CXX_COMPILER_RANLIB=/usr/bin/ranlib \
 	    -DCMAKE_AR=/usr/bin/ar \
 	    "$dbg" \
-	    $sans \
+	    "$sans" \
 	    "$metal" \
             -GNinja \
             -DCMAKE_OSX_ARCHITECTURES="$arch" \
@@ -318,4 +318,4 @@ xcodebuild -create-xcframework \
     -framework "$IREE_BUILD_RUNTIME_DIR"/ios-sim-arm64/lib/iree.framework \
     -framework "$IREE_BUILD_RUNTIME_DIR"/ios-dev-arm64/lib/iree.framework \
     -output "$IREE_BUILD_RUNTIME_XCFRAMEWORK"
-tree -L 1 -d /Users/y/w/iree-ios/build/runtime/iree.xcframework
+tree -L 1 -d "$IREE_BUILD_RUNTIME_XCFRAMEWORK"

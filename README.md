@@ -16,7 +16,7 @@ Run `build.sh` in this project to
 1. [Homebrew](https://brew.sh/)
 1. CMake and Ninja
    ```bash
-   brew install cmake ninja
+   brew install cmake ninja tree
    ```
 
 ## Usage

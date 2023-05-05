@@ -3,6 +3,10 @@
 # exit when any command fails
 set -e
 
+# Force build to use this version of the command line tools
+# Overrides what `xcode-select -p` currently points to
+export DEVELOPER_DIR=/Applications/Xcode.app
+
 dbg="-DCMAKE_BUILD_TYPE=Release"
 metal=""
 

@@ -6,7 +6,7 @@ In the repo [`iree-org/iree-jax`](https://github.com/iree-org/iree-jax/tree/main
 
 Following steps in [`README.md`](/README.md) to build the IREE compiler and runtime for macOS, and the runtime as an XCFramework for macOS and iOS.
 
-**\[04/26/2023\]** Please be aware that we will need to build this [feature branch](https://github.com/antiagainst/iree/tree/metal-hal-pr) before it lands to the main branch.
+**04/26/2023** Please be aware that we will need to build this [feature branch](https://github.com/antiagainst/iree/tree/metal-hal-pr) before it lands to the main branch.
 
 ### Fetch the Source Code
 

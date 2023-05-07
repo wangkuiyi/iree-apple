@@ -16,7 +16,7 @@ Run `build.sh` in this project to
 1. [Homebrew](https://brew.sh/)
 1. CMake and Ninja
    ```bash
-   brew install cmake ninja
+   brew install cmake ninja tree
    ```
 
 ## Usage
@@ -63,7 +63,7 @@ If you want Metal GPU support, you will need to clone https://github.com/antiaga
 cd ~/work/iree
 git remote add lei https://github.com/antiagainst/iree
 git fetch lei
-git checkout apple-metal-hal
+git checkout metal-hal-pr
 git submodule update
 ```
 

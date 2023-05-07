@@ -26,7 +26,7 @@ export PYTHONPATH=$IREE_BUILD_COMPILER_PYTHON_BINDING_COMPILER:$IREE_BUILD_COMPI
 echo "Set PYTHONPATH to $PYTHONPATH"
 
 IMPORT_TEST="import iree.compiler, iree.runtime"
-if python -c "$IMPORT_TEST"; then
+if python3 -c "$IMPORT_TEST"; then
     echo "$IMPORT_TEST works"
 else
     echo "error: $IMPORT_TEST does not work"

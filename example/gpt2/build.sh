@@ -24,7 +24,7 @@ echo "Setup environment variables ..."
 source "$PROJECT_DIR"/install.sh
 
 echo "Export MLIR of GPT-2 ..."
-python3 "$IREE_JAX_DIR"/models/gpt2/export.py
+python3 "$IREE_JAX_DIR"/models/gpt2/export.py --batch_size=1 --no_compile
 
 echo "Build GPT-2 for Metal GPU ..."
 iree-compile \
@@ -33,4 +33,3 @@ iree-compile \
   --iree-metal-compile-to-metallib=false \
   /tmp/gpt2.mlir \
   -o /tmp/gpt2-metal.vmfb
-

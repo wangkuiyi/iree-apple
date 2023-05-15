@@ -119,7 +119,6 @@ function readlink_if_symbolic() {
 # into the corresponding target framework in the XCFramework.
 #
 #  $CMAKE_BUILD_DIR/iree_core/third_party/cpuinfo/libcpuinfo.a
-#  $CMAKE_BUILD_DIR/iree_core/third_party/cpuinfo/deps/clog/libclog.a
 #  $CMAKE_BUILD_DIR/iree_core/build_tools/third_party/flatcc/libflatcc_parsing.a
 #
 function merge_static_libraries() {
@@ -141,10 +140,9 @@ function merge_static_libraries() {
     (
         cd "$static_lib_dir"
         mv iree libiree.a
-        if libtool -static -o iree libiree.a libflatcc_parsing.a libclog.a libcpuinfo.a \
-            >"$build_dir"/merge_static_libraries.log 2>&1; then
-            echo "Merged for $label successfully"
-        fi
+        libtool -static -o iree libiree.a libflatcc_parsing.a libcpuinfo.a \
+            >"$build_dir"/merge_static_libraries.log 2>&1
+        echo "Merged for $label successfully"
     )
 }
 

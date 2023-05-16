@@ -23,6 +23,9 @@ echo "Setup environment variables ..."
 # shellcheck source=/dev/null
 source "$PROJECT_DIR"/install.sh
 
+# https://github.com/iree-org/iree-jax/blob/293f29e6efb7c139a8408342e6a1e1f9385d5a08/.github/workflows/test_gpt2_model.yaml#LL23C11-L24C1
+python3 -m pip install absl-py future h5py numpy optax transformers
+
 echo "Export MLIR of GPT-2 ..."
 python3 "$IREE_JAX_DIR"/models/gpt2/export.py --batch_size=1 --no_compile
 

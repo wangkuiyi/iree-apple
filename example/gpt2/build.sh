@@ -22,6 +22,17 @@ echo "Downloading GPT-2 model files ..."
 echo "Setup environment variables ..."
 # shellcheck source=/dev/null
 source "$PROJECT_DIR"/install.sh
+# test if iree.compiler and iree.runtime are successfully installed
+IMPORT_TEST="import iree.compiler, iree.runtime"
+if python3 -c "$IMPORT_TEST"; then
+    echo "$IMPORT_TEST works"
+else
+    echo "error: $IMPORT_TEST does not work"
+    exit 2
+fi
+
+export PYTHONPATH=$PYTHONPATH:"$IREE_JAX_DIR"
+echo "Set PYTHONPATH to $PYTHONPATH"
 
 echo "Export MLIR of GPT-2 ..."
 python3 "$IREE_JAX_DIR"/models/gpt2/export.py --batch_size=1 --no_compile
